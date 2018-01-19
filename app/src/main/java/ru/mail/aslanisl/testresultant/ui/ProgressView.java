@@ -40,6 +40,7 @@ public class ProgressView extends LinearLayout {
     }
 
     public void setLoading(boolean enable){
+        setEnabled(!enable);
         reload.setVisibility(enable ? GONE : VISIBLE);
         progressBar.setVisibility(enable ? VISIBLE : GONE);
     }

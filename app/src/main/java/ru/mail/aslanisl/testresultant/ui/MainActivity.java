@@ -50,7 +50,6 @@ public class MainActivity extends AppCompatActivity implements Callback<ValueRes
 
     @OnClick(R.id.activity_main_progress_view)
     void refreshClick(){
-        progressView.setLoading(true);
         makeCall(false);
     }
 
@@ -60,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements Callback<ValueRes
         }
         if (callRunnable == null){
             callRunnable = ()->{
+                progressView.setLoading(true);
                 if (valueCall == null){
                     valueCall = Api.getApiService().getValues();
                     valueCall.enqueue(this);
@@ -86,11 +86,12 @@ public class MainActivity extends AppCompatActivity implements Callback<ValueRes
 
     @Override
     public void onResponse(Call<ValueResponse> call, Response<ValueResponse> response) {
+        progressView.setLoading(false);
         if (response.isSuccessful()){
             ValueResponse valueResponse = response.body();
             if (valueResponse != null && valueResponse.getValueModels() != null){
                 valueAdapter.updateList(valueResponse.getValueModels());
-                progressView.setLoading(false);
+
             }
         }
         makeCall(true);
@@ -98,7 +99,8 @@ public class MainActivity extends AppCompatActivity implements Callback<ValueRes
 
     @Override
     public void onFailure(Call<ValueResponse> call, Throwable t) {
-        makeCall(true);
+        progressView.setLoading(false);
+        makeCall(false);
     }
 
     @Override
