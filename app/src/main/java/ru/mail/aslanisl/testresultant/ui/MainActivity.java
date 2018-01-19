@@ -24,6 +24,8 @@ import ru.mail.aslanisl.testresultant.model.ValueResponse;
 
 public class MainActivity extends AppCompatActivity implements Callback<ValueResponse>{
 
+    private static final String KEY_VALUE = "value";
+
     private static final int CALL_INTERVAL_TIME = 15 * 1000;
 
     private Call<ValueResponse> valueCall;
@@ -35,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements Callback<ValueRes
     @BindView(R.id.activity_main_progress_view) ProgressView progressView;
     @BindView(R.id.activity_main_recycle) RecyclerView recyclerView;
     private ValueAdapter valueAdapter;
-
+    private ArrayList<ValueModel> valueModels;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +48,10 @@ public class MainActivity extends AppCompatActivity implements Callback<ValueRes
         valueAdapter = new ValueAdapter();
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(valueAdapter);
+        if (savedInstanceState != null){
+            valueModels = savedInstanceState.getParcelableArrayList(KEY_VALUE);
+            if (valueModels != null) valueAdapter.updateList(valueModels);
+        }
     }
 
     @OnClick(R.id.activity_main_progress_view)
@@ -90,8 +96,8 @@ public class MainActivity extends AppCompatActivity implements Callback<ValueRes
         if (response.isSuccessful()){
             ValueResponse valueResponse = response.body();
             if (valueResponse != null && valueResponse.getValueModels() != null){
+                valueModels = valueResponse.getValueModels();
                 valueAdapter.updateList(valueResponse.getValueModels());
-
             }
         }
         makeCall(true);
@@ -113,5 +119,11 @@ public class MainActivity extends AppCompatActivity implements Callback<ValueRes
     protected void onStop() {
         super.onStop();
         stopCall();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList(KEY_VALUE, valueModels);
     }
 }

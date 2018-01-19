@@ -27,7 +27,6 @@ public class ValueAdapter extends RecyclerView.Adapter<ValueAdapter.ViewHolder> 
 
     public void updateList(List<ValueModel> newValues){
         DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new MyDiffCallback(values, newValues));
-
         values.clear();
         values.addAll(newValues);
         diffResult.dispatchUpdatesTo(this);
@@ -42,7 +41,9 @@ public class ValueAdapter extends RecyclerView.Adapter<ValueAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         ValueModel model = values.get(position);
-        holder.bindHolder(model);
+        if (model != null) {
+            holder.bindHolder(model);
+        }
     }
 
     @Override
@@ -62,7 +63,8 @@ public class ValueAdapter extends RecyclerView.Adapter<ValueAdapter.ViewHolder> 
         public void bindHolder(ValueModel model){
             name.setText(model.getName());
             volume.setText(String.format(Locale.getDefault(), "%d", model.getVolume()));
-            amount.setText(String.format(Locale.getDefault(), "%.2f", model.getPrice().getAmount()));
+            amount.setText(String.format(Locale.getDefault(), "%.2f", model.getPrice() != null
+                    ? model.getPrice().getAmount() : 0));
         }
     }
 }

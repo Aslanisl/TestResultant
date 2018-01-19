@@ -3,6 +3,7 @@ package ru.mail.aslanisl.testresultant.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,13 +14,13 @@ public class ValueResponse {
 
     @SerializedName("stock")
     @Expose
-    private List<ValueModel> valueModels;
+    private ArrayList<ValueModel> valueModels;
 
     @SerializedName("as_of")
     @Expose
     private String date;
 
-    public List<ValueModel> getValueModels() {
+    public ArrayList<ValueModel> getValueModels() {
         return valueModels;
     }
 
